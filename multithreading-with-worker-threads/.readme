@@ -1,0 +1,82 @@
+[Español](#multihilo-en-nodejs)
+1. [¿Qué son los hilos?](#qué-son-los-hilos)
+2. [¿Cómo Node.js maneja los hilos con un único hilo de ejecución principal?](#cómo-nodejs-maneja-los-hilos-con-un-único-hilo-de-ejecución-principal)
+3. [Los problemas que causa un único hilo y cómo se lo soluciona utilizando Worker Threads](#los-problemas-que-causa-un-único-hilo-y-cómo-se-lo-soluciona-utilizando-worker-threads)
+4. [¿Cuáles son los beneficios de usar worker threads en Node.js?](#cuáles-son-los-beneficios-de-usar-worker-threads-en-nodejs)
+5. [¿Cuándo y cómo se deberían utilizar los hilos de manera efectiva?](#cuándo-y-cómo-se-deberían-utilizar-los-hilos-de-manera-efectiva)
+6. [Conclusión](#conclusión)
+
+[English](#multithreading-in-nodejs)
+1. [What are threads?](#what-are-threads)
+2. [How does Node.js handle threads with a single main execution thread?](#how-does-nodejs-handle-threads-with-a-single-main-execution-thread)
+3. [Issues caused by a single thread and how it is solved using Worker Threads](#issues-caused-by-a-single-thread-and-how-it-is-solved-using-worker-threads)
+4. [What are the benefits of using worker threads in Node.js?](#what-are-the-benefits-of-using-worker-threads-in-nodejs)
+5. [When and how should threads be effectively used?](#when-and-how-should-threads-be-effectively-used)
+6. [Conclusion](#conclusion)
+
+
+# Multihilo en Node.js
+
+### ¿Qué son los hilos?
+
+Los hilos son unidades básicas de ejecución dentro de un proceso. En el contexto de la programación, los hilos permiten que un programa realice múltiples tareas de manera concurrente. Cada hilo representa una secuencia de ejecución independiente dentro del proceso.
+
+### ¿Cómo Node.js maneja los hilos con un único hilo de ejecución principal?
+
+Node.js utiliza un modelo de ejecución asíncrona y no bloqueante que se basa en un solo hilo de ejecución principal. Este enfoque permite manejar solicitudes entrantes de manera eficiente sin bloquear el hilo principal. Sin embargo, esta característica puede limitar el rendimiento en aplicaciones intensivas en CPU.
+
+### Los problemas que causa un único hilo y cómo se lo soluciona utilizando Worker Threads:
+
+En aplicaciones intensivas en CPU, el uso de un único hilo puede resultar en un rendimiento deficiente, ya que el hilo principal puede quedar bloqueado mientras realiza tareas pesadas. Para solucionar este problema, Node.js introdujo el módulo `worker_threads`, que permite crear hilos adicionales para realizar tareas en paralelo. Estos worker threads permiten aprovechar los múltiples núcleos de la CPU y mejorar el rendimiento de la aplicación.
+
+### ¿Cuáles son los beneficios de usar worker threads en Node.js?
+
+Los beneficios incluyen una mejora en el rendimiento al aprovechar los múltiples núcleos de la CPU, una mayor capacidad de procesamiento para tareas intensivas en CPU, y una mejor capacidad de respuesta en aplicaciones que manejan solicitudes concurrentes.
+
+### ¿Cuándo y cómo se deberían utilizar los hilos de manera efectiva?
+
+Los worker threads deben utilizarse en situaciones donde se requiera realizar tareas intensivas en CPU de manera eficiente y paralela, como el procesamiento de datos en tiempo real, la generación de informes complejos o la manipulación de grandes conjuntos de datos. Se recomienda utilizar los worker threads de manera efectiva cuando se necesita mejorar el rendimiento de la aplicación y se tienen recursos de hardware disponibles para aprovechar la paralelización de tareas. Sin embargo, es importante tener en cuenta que la creación excesiva de hilos puede llevar a un uso excesivo de recursos y a una complejidad adicional en la gestión de la concurrencia.
+
+### Conclusión
+
+En esta carpeta, se construyó una aplicación de Node con una tarea ligada a la CPU que bloquea el hilo principal. Luego se intentó hacer que la tarea fuera no bloqueante utilizando promesas, lo cual no tuvo éxito. Después de eso, se utilizó el módulo `worker_threads` para desviar la tarea ligada al CPU a otro hilo para hacerla no bloqueante. Finalmente, se utilizó el módulo `worker_threads` para crear la mitad de los hilos totales del CPU para acelerar la tarea intensiva en CPU.                   
+Documentación: [https://nodejs.org/api/worker_threads.html](https://nodejs.org/api/worker_threads.html)
+
+# Multithreading in Node.js
+
+### Introduction
+
+Node.js runs JavaScript code in a single thread, which means that your code can only do one task at a time. However, Node.js itself is multithreaded and provides hidden threads through the libuv library, which handles I/O operations like reading files from a disk or network requests. Through the use of hidden threads, Node.js provides asynchronous methods that allow your code to make I/O requests without blocking the main thread.
+
+Although Node.js has hidden threads, you cannot use them to offload CPU-intensive tasks, such as complex calculations, image resizing, or video compression. Since JavaScript is single-threaded when a CPU-intensive task runs, it blocks the main thread and no other code executes until the task completes. Without using other threads, the only way to speed up a CPU-bound task is to increase the processor speed.
+
+However, in recent years, CPUs haven’t been getting faster. Instead, computers are shipping with extra cores, and it’s now more common for computers to have 8 or more cores. Despite this trend, your code will not take advantage of the extra cores on your computer to speed up CPU-bound tasks or avoid breaking the main thread because JavaScript is single-threaded.
+
+To remedy this, Node.js introduced the worker-threads module, which allows you to create threads and execute multiple JavaScript tasks in parallel. Once a thread finishes a task, it sends a message to the main thread that contains the result of the operation so that it can be used with other parts of the code. The advantage of using worker threads is that CPU-bound tasks don’t block the main thread and you can divide and distribute a task to multiple workers to optimize it.
+
+In this tutorial, you’ll create a Node.js app with a CPU-intensive task that blocks the main thread. Next, you will use the worker-threads module to offload the CPU-intensive task to another thread to avoid blocking the main thread. Finally, you will divide the CPU-bound task and have four threads work on it in parallel to speed up the task.
+
+### What are threads?
+
+Threads are basic units of execution within a process. In the context of programming, threads allow a program to perform multiple tasks concurrently. Each thread represents an independent sequence of execution within the process.
+
+### How does Node.js handle threads with a single main execution thread?
+
+Node.js uses an asynchronous, non-blocking execution model based on a single main execution thread. This approach allows handling incoming requests efficiently without blocking the main thread. However, this feature can limit performance in CPU-intensive applications.
+
+### Issues caused by a single thread and how it is solved using Worker Threads:
+
+In CPU-intensive applications, using a single thread can result in poor performance as the main thread may become blocked while performing heavy tasks. To address this issue, Node.js introduced the `worker_threads` module, which allows creating additional threads to perform tasks in parallel. These worker threads enable leveraging multiple CPU cores and improving application performance.
+
+### What are the benefits of using worker threads in Node.js?
+
+Benefits include improved performance by utilizing multiple CPU cores, increased processing capacity for CPU-intensive tasks, and better responsiveness in applications handling concurrent requests.
+
+### When and how should threads be effectively used?
+
+Worker threads should be used in situations where efficient and parallel CPU-intensive tasks are required, such as real-time data processing, complex report generation, or handling large datasets. Effective use of worker threads is recommended when improving application performance is needed, and hardware resources are available to leverage task parallelization. However, it is important to note that excessive thread creation can lead to resource overuse and additional complexity in concurrency management.
+
+### Conclusion
+
+In this tutorial, a Node application was built with a CPU-bound task that blocks the main thread. An attempt was made to make the task non-blocking using promises, which was unsuccessful. Afterward, the `worker_threads` module was used to offload the CPU-bound task to another thread to make it non-blocking. Finally, the `worker_threads` module was used to create half of the total CPU threads to speed up the CPU-intensive task.          
+Documentation: [https://nodejs.org/api/worker_threads.html](https://nodejs.org/api/worker_threads.html)

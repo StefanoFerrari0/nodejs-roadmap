@@ -1,0 +1,20 @@
+{
+  "name": "learning-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "worker-threads-1": "node --watch ./multithreading-with-worker-threads/1-problem-example/index.js",
+    "worker-threads-2": "node --watch ./multithreading-with-worker-threads/2-partial-solution-example/index.js",
+    "worker-threads-3": "node --watch ./multithreading-with-worker-threads/3-optimized-solution-example/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "morgan": "^1.10.0"
+  }
+}
